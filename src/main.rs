@@ -23,11 +23,10 @@ fn main() {
     
     println!("min: {min:.9}, median: {median:.9}, max: {max:.9}");
     println!("mean: {mean:.9}");
-    println!("ci 90: [{p05:.9}, {p95:.9}]");
-    println!("ci 95: [{p025:.9}, {p975:.9}]");
+    println!("CI (p=0.1):  [{p05:.9}, {p95:.9}]");
+    println!("CI (p=0.05): [{p025:.9}, {p975:.9}]");
     println!("took {:.1} s", start_time.elapsed().as_millis() as f64 / 1000.0);
     println!("true value: {}", std::f64::consts::PI);
-    
 }
 
 fn gen_pi(iters: usize, rand: &mut impl Rand) -> f64 {
