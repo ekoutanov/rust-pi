@@ -1,5 +1,5 @@
-//! Dvoretzky–Kiefer–Wolfowitz estimation of confidence intervals for nonparametric
-//! distributions.
+//! Use of the Dvoretzky–Kiefer–Wolfowitz inequality to estimate confidence intervals for 
+//! nonparametric distributions.
 
 use crate::ConfidenceInterval;
 use crate::sample::prob_by;
