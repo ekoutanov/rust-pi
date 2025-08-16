@@ -1,5 +1,5 @@
-use rust_pi::sample::quantile;
-use rust_pi::{dkw, ConfidenceInterval};
+use rust_pi::sample::{quantile, SummaryStatistics};
+use rust_pi::{dkw, gaussian, ConfidenceInterval};
 use std::time::Instant;
 use tinyrand::{Rand, Seeded, StdRand};
 
@@ -25,9 +25,16 @@ fn main() {
 
     println!("n: {SAMPLE_SIZE}, trials: {TRIALS}, took {:.1} s", start_time.elapsed().as_millis() as f64 / 1000.0);
     println!("min: {min:.9}, median: {median:.9}, max: {max:.9}");
-    println!("mean: {mean:.9}");
+    let sample_stats = SummaryStatistics::from(&*sample);
+    println!("µ: {:.9}, σ: {:.9}", sample_stats.mean, sample_stats.std_dev);
+    
+    println!("Gaussian:");
+    let norm_ci_10 = gaussian::ci(sample_stats.mean, sample_stats.std_dev, SAMPLE_SIZE, 0.1);
+    let norm_ci_05 = gaussian::ci(sample_stats.mean, sample_stats.std_dev, SAMPLE_SIZE, 0.05);
+    println!("  CI (α=0.1):  {norm_ci_10}");
+    println!("  CI (α=0.05): {norm_ci_05}");
 
-    println!("unadjusted nonparametric:");
+    println!("Unadjusted nonparametric:");
     let unadj_ci_10 = ConfidenceInterval { lower: p05, upper: p95 };
     let unadj_ci_05 = ConfidenceInterval { lower: p025, upper: p975 };
     println!("  CI (α=0.1):  {unadj_ci_10}");

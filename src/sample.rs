@@ -1,4 +1,27 @@
 use std::cmp::Ordering;
+use statrs::statistics::Statistics;
+
+/// Summary statistics for a sample.
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
+pub struct SummaryStatistics {
+    pub mean: f64,
+    pub std_dev: f64,
+    pub count: usize,
+    pub min: f64,
+    pub max: f64,
+}
+
+impl<'a> From<&'a [f64]> for SummaryStatistics {
+    fn from(sample: &'a [f64]) -> Self {
+        Self {
+            mean: sample.mean(),
+            std_dev: sample.std_dev(),
+            count: sample.len(),
+            min: sample.min(),
+            max: sample.max(),
+        }
+    }
+}
 
 pub fn quantile<T>(ordered: &[T], quantile: f64) -> &T {
     let index = (quantile * ordered.len() as f64) as usize;
