@@ -2,8 +2,8 @@ _help:
     @just --list
 
 # runs the simulation
-run:
-     RUST_LOG=debug RUST_BACKTRACE=full cargo run --release
+run *ARGS:
+     RUST_LOG=debug RUST_BACKTRACE=full cargo run --release -- {{ARGS}}
     
 # run the tests
 test:
