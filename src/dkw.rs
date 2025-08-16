@@ -1,3 +1,6 @@
+//! Dvoretzky–Kiefer–Wolfowitz estimation of confidence intervals for nonparametric
+//! distributions.
+
 use crate::ConfidenceInterval;
 use crate::sample::prob_by;
 
@@ -42,4 +45,53 @@ pub fn ci(sample: &[f64], alpha: f64) -> ConfidenceInterval {
     let lower = ci_lower(sample, epsilon);
     let upper = ci_upper(sample, epsilon);
     ConfidenceInterval { lower, upper }
+}
+
+#[cfg(test)]
+mod tests {
+    use assert_float_eq::assert_float_absolute_eq;
+
+    fn generate_sample(ratings: Vec<(f64, usize)>) -> Vec<f64> {
+        let count = ratings.iter().map(|(_, count)| count).sum();
+        let mut sample = Vec::with_capacity(count);
+        for (rating, count) in ratings {
+            for _ in 0..count {
+                sample.push(rating);
+            }
+        }
+        sample
+    }
+
+    #[test]
+    fn ci_mixed() {
+        let mut sample = generate_sample(vec![(1.0, 0), (2.0, 3), (3.0, 9), (4.0, 53), (5.0, 144)]);
+        sample.sort_unstable_by(|a, b| a.total_cmp(b));
+        let ci_05 = super::ci(&sample, 0.05);
+        println!("mean: {:.9}", sample.iter().sum::<f64>() / sample.len() as f64);
+        println!("ci_05: {ci_05}");
+        assert_float_absolute_eq!(4.335_399, ci_05.lower);
+        assert_float_absolute_eq!(4.782_937, ci_05.upper);
+    }
+
+    #[test]
+    fn ci_single() {
+        let mut sample = generate_sample(vec![(12.0, 10)]);
+        sample.sort_unstable_by(|a, b| a.total_cmp(b));
+        let ci_05 = super::ci(&sample, 0.05);
+        println!("mean: {:.9}", sample.iter().sum::<f64>() / sample.len() as f64);
+        println!("ci_05: {ci_05}");
+        assert_float_absolute_eq!(12.0, ci_05.lower);
+        assert_float_absolute_eq!(12.0, ci_05.upper);
+    }
+
+    #[test]
+    fn ci_max_uncertainty() {
+        let mut sample = generate_sample(vec![(1.0, 1), (2.0, 1)]);
+        sample.sort_unstable_by(|a, b| a.total_cmp(b));
+        let ci_05 = super::ci(&sample, 0.05);
+        println!("mean: {:.9}", sample.iter().sum::<f64>() / sample.len() as f64);
+        println!("ci_05: {ci_05}");
+        assert_float_absolute_eq!(1.0, ci_05.lower);
+        assert_float_absolute_eq!(2.0, ci_05.upper);
+    }
 }
