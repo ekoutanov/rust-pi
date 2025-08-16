@@ -1,6 +1,7 @@
 use std::fmt::{Display, Formatter};
 
 pub mod dkw;
+pub mod sample;
 
 #[derive(Debug)]
 pub struct ConfidenceInterval {
