@@ -1,7 +1,7 @@
 use std::fmt::{Display, Formatter};
 
 pub mod dkw;
-pub mod gaussian;
+pub mod normal;
 pub mod sample;
 
 #[derive(Debug)]
@@ -14,6 +14,9 @@ impl Display for ConfidenceInterval {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let mean = (self.lower + self.upper) / 2.0;
         let span = self.upper - mean;
-        write!(f, "[{:.9}, {:.9}], \u{0078}\u{0304} = {mean:.9} ± {span:.9}", self.lower, self.upper)
+        match f.precision() {
+            None => write!(f, "[{}, {}], \u{0078}\u{0304} = {mean} ± {span:}", self.lower, self.upper),
+            Some(precision) => write!(f, "[{:.precision$}, {:.precision$}], \u{0078}\u{0304} = {mean:.precision$} ± {span:.precision$}", self.lower, self.upper)
+        }
     }
 }

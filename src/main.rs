@@ -1,6 +1,6 @@
 use clap::Parser;
 use rust_pi::sample::{quantile, SummaryStatistics};
-use rust_pi::{dkw, gaussian, ConfidenceInterval};
+use rust_pi::{dkw, normal, ConfidenceInterval};
 use std::time::Instant;
 use tinyrand::{Rand, Seeded, StdRand};
 
@@ -50,21 +50,21 @@ fn main() {
     println!("reference π: {}", std::f64::consts::PI);
 
     println!();
-    println!("Gaussian:");
-    let norm_ci_10 = gaussian::ci(
+    println!("normal:");
+    let norm_ci_10 = normal::ci(
         sample_stats.mean,
         sample_stats.std_dev,
         args.sample_size,
         0.1,
     );
-    let norm_ci_05 = gaussian::ci(
+    let norm_ci_05 = normal::ci(
         sample_stats.mean,
         sample_stats.std_dev,
         args.sample_size,
         0.05,
     );
-    println!("  CI (α=0.1):  {norm_ci_10}");
-    println!("  CI (α=0.05): {norm_ci_05}");
+    println!("  CI (α=0.1):  {norm_ci_10:.9}");
+    println!("  CI (α=0.05): {norm_ci_05:.9}");
 
     println!();
     println!("Unadjusted nonparametric:");
@@ -76,15 +76,15 @@ fn main() {
         lower: p025,
         upper: p975,
     };
-    println!("  CI (α=0.1):  {unadj_ci_10}");
-    println!("  CI (α=0.05): {unadj_ci_05}");
+    println!("  CI (α=0.1):  {unadj_ci_10:.9}");
+    println!("  CI (α=0.05): {unadj_ci_05:.9}");
 
     println!();
     println!("Dvoretzky–Kiefer–Wolfowitz nonparametric:");
     let dkw_ci_10 = dkw::ci(&sample, 0.1);
     let dkw_ci_05 = dkw::ci(&sample, 0.05);
-    println!("  CI (α=0.1):  {dkw_ci_10}");
-    println!("  CI (α=0.05): {dkw_ci_05}");
+    println!("  CI (α=0.1):  {dkw_ci_10:.9}");
+    println!("  CI (α=0.05): {dkw_ci_05:.9}");
 }
 
 fn gen_pi(trials: usize, rand: &mut impl Rand) -> f64 {
