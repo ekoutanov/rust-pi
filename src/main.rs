@@ -81,10 +81,14 @@ fn main() {
 
     println!();
     println!("Dvoretzky–Kiefer–Wolfowitz nonparametric:");
-    let dkw_ci_10 = dkw::ci(&sample, 0.1);
-    let dkw_ci_05 = dkw::ci(&sample, 0.05);
-    println!("  CI (α=0.1):  {dkw_ci_10:.9}");
-    println!("  CI (α=0.05): {dkw_ci_05:.9}");
+    if sample.len() > 1 {
+        let dkw_ci_10 = dkw::ci(&sample, 0.1);
+        let dkw_ci_05 = dkw::ci(&sample, 0.05);
+        println!("  CI (α=0.1):  {dkw_ci_10:.9}");
+        println!("  CI (α=0.05): {dkw_ci_05:.9}");
+    } else {
+        println!("  insufficient sample size for a confidence interval")
+    }
 }
 
 fn gen_pi(trials: usize, rand: &mut impl Rand) -> f64 {
